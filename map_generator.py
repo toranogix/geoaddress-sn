@@ -40,7 +40,7 @@ class MapGenerator:
         """Create the base map"""
         self.m = folium.Map(
             location=self.map_center, 
-            zoom_start=15, 
+            zoom_start=10, 
             tiles='OpenStreetMap'
         )
     
