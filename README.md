@@ -4,7 +4,7 @@ Automatically assigns names to streets in a neighborhood using OpenStreetMap and
 
 ## 📁 Files
 
-- `launch.py` - Main script to run everything
+- `main.py` - Main script to run everything
 - `name_generator.py` - Manages street names
 - `route_namer.py` - Downloads and processes routes
 - `map_generator.py` - Creates interactive maps
@@ -12,7 +12,7 @@ Automatically assigns names to streets in a neighborhood using OpenStreetMap and
 ## 🚀 Quick Start
 
 ```bash
-python launch.py
+python main.py
 ```
 
 This will:
@@ -59,5 +59,4 @@ pip install osmnx geopandas pandas folium
 Feel free to pull the repo or give some feedback!
 
 
-**Happy mapping! 🗺️**
 
