@@ -1,9 +1,9 @@
 import folium
 import geopandas as gpd
-import logging
 from typing import List
+from utils import logger
+from pathlib import Path
 
-logger = logging.getLogger(__name__)
 
 class MapGenerator:
     """Class to generate the interactive map"""
@@ -11,10 +11,10 @@ class MapGenerator:
     def __init__(self, routes_quartiers: gpd.GeoDataFrame, quartiers_gdf: gpd.GeoDataFrame):
         self.routes_quartiers = routes_quartiers
         self.quartiers_gdf = quartiers_gdf
-        self.map_center = self._calculate_map_center()
+        self.map_center = self.calculate_map_center()
         self.m = None
         
-    def _calculate_map_center(self) -> List[float]:
+    def calculate_map_center(self) -> List[float]:
         """Calculate the center of the map"""
         if len(self.quartiers_gdf) > 0:
             center_geom = self.quartiers_gdf.iloc[0].geometry
@@ -22,21 +22,21 @@ class MapGenerator:
                 return [center_geom.centroid.y, center_geom.centroid.x]
         return [14.6928, -17.4467] # default coordinates
     
-    def _simplify_geometry(self, geom, tolerance: float = 0.0001):
+    def simplify_geometry(self, geom, tolerance: float = 0.0001):
         """Simplify the geometry for better performance"""
         try:
             return geom.simplify(tolerance)
         except:
             return geom
     
-    def _get_optimized_routes(self, max_routes: int = 1000) -> gpd.GeoDataFrame:
+    def get_optimized_routes(self, max_routes: int = 1000) -> gpd.GeoDataFrame:
         """Return an optimized sample of routes"""
         if len(self.routes_quartiers) > max_routes:
             logger.info(f"Trop de routes ({len(self.routes_quartiers)}), affichage limité à {max_routes}")
             return self.routes_quartiers.sample(n=max_routes, random_state=42)
         return self.routes_quartiers
     
-    def _create_map(self) -> None:
+    def create_map(self) -> None:
         """Create the base map"""
         self.m = folium.Map(
             location=self.map_center, 
@@ -44,20 +44,20 @@ class MapGenerator:
             tiles='OpenStreetMap'
         )
     
-    def _add_quartier_boundaries(self) -> None:     
+    def add_quartier_boundaries(self) -> None:     
         """Add the boundaries of the quartiers"""
         for _, row in self.quartiers_gdf.iterrows():
             if row.geometry is not None:
-                simplified_geom = self._simplify_geometry(row.geometry, tolerance=0.0005)
+                simplified_geom = self.simplify_geometry(row.geometry, tolerance=0.0005)
                 folium.GeoJson(
                     simplified_geom,
                     style_function=lambda x: {"color": "red", "weight": 2, "fillOpacity": 0.05},
                     tooltip=f"Quartier: {row['quartier_nom']}"
                 ).add_to(self.m)
     
-    def _add_routes(self, max_routes: int = 1000) -> None:
+    def add_routes(self, max_routes: int = 1000) -> None:
         """Add the routes to the map"""
-        routes_to_display = self._get_optimized_routes(max_routes)
+        routes_to_display = self.get_optimized_routes(max_routes)
         routes_group = folium.FeatureGroup(name="Routes nommées")
         
         def optimized_style_function(feature):
@@ -74,7 +74,7 @@ class MapGenerator:
             
             for _, row in batch.iterrows():
                 if row.geometry is not None:
-                    simplified_route = self._simplify_geometry(row.geometry, tolerance=0.0001)
+                    simplified_route = self.simplify_geometry(row.geometry, tolerance=0.0001)
                     tooltip_text = f"Route: {row['nom_attribue']}"
                     
                     folium.GeoJson(
@@ -87,16 +87,20 @@ class MapGenerator:
         routes_group.add_to(self.m)
         logger.info(f"{len(routes_to_display)} routes ajoutées à la carte")
     
-    def _add_controls(self) -> None:
+    def add_controls(self) -> None:
         """Add the controls of the map"""
         folium.LayerControl().add_to(self.m)
     
     def generate_map(self, output_file: str = "html/carte_test.html", max_routes: int = 1000) -> None:
+
         """Generate the complete interactive map"""
-        self._create_map()
-        self._add_quartier_boundaries()
-        self._add_routes(max_routes)
-        self._add_controls()
+
+        # create html directory if it doesn't exist
+        Path(output_file).parent.mkdir(parents=True, exist_ok=True)
+        self.create_map()
+        self.add_quartier_boundaries()
+        self.add_routes(max_routes)
+        self.add_controls()
         
         self.m.save(output_file)
         logger.info(f"Carte générée : {output_file}")

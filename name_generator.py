@@ -1,8 +1,8 @@
 import pandas as pd
-import logging
+from pathlib import Path
+from utils import logger
 import random
 
-logger = logging.getLogger(__name__)
 
 class NameGenerator:
     """Class to generate and manage street names"""
@@ -42,6 +42,9 @@ class NameGenerator:
         self.noms = list(noms)
 
     def save_names_to_csv(self, filename: str = "data/names.csv") -> None:
+
+        # Create data directory if it doesn't exist
+        Path(filename).parent.mkdir(parents=True, exist_ok=True)
         df = pd.DataFrame({"name": self.noms})
         df.to_csv(filename, index=False, encoding="utf-8")
         logger.info(f"Fichier '{filename}' généré avec succès")

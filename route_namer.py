@@ -2,10 +2,8 @@ import osmnx as ox
 import geopandas as gpd
 import pandas as pd
 import random
-import logging
-from typing import List
+from utils import logger
 
-logger = logging.getLogger(__name__)
 
 class RouteNamer:
     """Manage the assignment of names to routes"""

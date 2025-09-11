@@ -1,14 +1,8 @@
-import logging
+
 from name_generator import NameGenerator
 from route_namer import RouteNamer
 from map_generator import MapGenerator
-
-# Logs
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+from utils import logger
 
 def main():
     """Main function"""
