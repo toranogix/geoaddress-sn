@@ -8,7 +8,7 @@ from utils import logger
 class RouteNamer:
     """Manage the assignment of names to routes"""
     
-    def __init__(self, ville: str, filter_quartier: str = "Yoff"):
+    def __init__(self, ville: str, filter_quartier: str):
         self.ville = ville
         self.filter_quartier = filter_quartier
         self.names_list = []
@@ -39,30 +39,19 @@ class RouteNamer:
             logger.error(f"Erreur lors du téléchargement des routes: {e}")
             raise
     
+
     def load_quartiers_data(self, filter_quartier: str) -> gpd.GeoDataFrame:
         """ Get data from file. By default, it returns the data of the quartier Yoff """
 
         logger.info(f"Traitement du quartier {filter_quartier}...")
         try:
             self.quartiers_gdf = gpd.read_file("data/data_dkr/Quartier.shp")
+            filter_quartier = filter_quartier.strip().lower()
+            self.quartiers_gdf["CCRCA"] = self.quartiers_gdf["CCRCA"].str.strip().str.lower()  # delete spaces and uppercase
             self.quartiers_gdf = self.quartiers_gdf[self.quartiers_gdf["CCRCA"] == filter_quartier]
             self.quartiers_gdf = self.quartiers_gdf.to_crs(epsg=4326)
-            self.quartiers_gdf.to_file("data/output/quartier_test.geojson", driver="GeoJSON")
+            self.quartiers_gdf.to_file("data/output/quartier_test.geojson", driver="GeoJSON", index=False)
             logger.info(f"Traitement des données du quartier {filter_quartier} OK.")
-            return self.quartiers_gdf
-
-            """            
-            self.quartiers_gdf = r"ox.features_from_place(
-                f"{self.filter_quartier}, {self.ville}",
-                tags={"boundary": "administrative", "admin_level": "10"}
-            )
-            self.quartiers_gdf = self.quartiers_gdf[
-                self.quartiers_gdf.geom_type.isin(["Polygon", "MultiPolygon"])
-            ]
-            self.quartiers_gdf["quartier_nom"] = self.quartiers_gdf.get("name")
-            self.quartiers_gdf = self.quartiers_gdf.to_crs(epsg=4326)
-            self.quartiers_gdf.to_file("data/output/quartier_test.geojson", driver="GeoJSON")
-            logger.info(f"{len(self.quartiers_gdf)} quartiers téléchargés")"""
 
         except Exception as e:
             logger.error(f"Erreur lors du téléchargement des quartiers: {e}")
@@ -83,18 +72,31 @@ class RouteNamer:
         logger.info(f"{len(self.routes_quartiers)} routes associées aux quartiers")
     
     def assign_names_to_routes(self) -> None:
-        """Assign names to the roads"""
+        """Assign names to the roads. If the road has a name, it is not assigned a new name """
+        
         if self.routes_quartiers is None:
             raise ValueError("Routes et quartiers doivent être traités d'abord")
         
         noms_disponibles = self.names_list.copy()
         random.shuffle(noms_disponibles)
         
+        routes_with_original_names = 0
+        routes_with_new_names = 0
+        
         for i, (idx, row) in enumerate(self.routes_quartiers.iterrows()):
-            nom = noms_disponibles[i % len(noms_disponibles)]
+            # Check if the road already has a name 
+            if pd.notna(row["name"]) and row["name"] is not None and str(row["name"]).strip() != "":
+                nom = row["name"]
+                routes_with_original_names += 1
+            else:
+                # else assign a new name
+                nom = noms_disponibles[i % len(noms_disponibles)]
+                routes_with_new_names += 1
             self.routes_quartiers.loc[idx, "nom_attribue"] = nom
         
         logger.info(f"{len(self.routes_quartiers)} routes ont reçu un nom")
+        logger.info(f"- {routes_with_original_names} routes ont conservé leur nom")
+        logger.info(f"- {routes_with_new_names} routes ont reçu un nouveau nom")
     
     def run_pipeline(self) -> None:
         """Run the complete pipeline"""

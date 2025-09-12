@@ -29,36 +29,48 @@ class MapGenerator:
         except:
             return geom
     """
+    """s
     def get_optimized_routes(self, max_routes: int = 1000) -> gpd.GeoDataFrame:
-        """Return an optimized sample of routes"""
         if len(self.routes_quartiers) > max_routes:
             logger.info(f"Trop de routes ({len(self.routes_quartiers)}), affichage limité à {max_routes}")
             return self.routes_quartiers.sample(n=max_routes, random_state=42)
         return self.routes_quartiers
-    
+    """
     def create_map(self) -> None:
         """Create the base map"""
         self.m = folium.Map(
             location=self.map_center, 
-            zoom_start=10, 
+            zoom_start=12, 
             tiles='OpenStreetMap'
         )
     
     def add_quartier_boundaries(self) -> None:     
         """Add the boundaries of the quartiers"""
+        quartier_group = folium.FeatureGroup(name="Quartiers")
+        
+        def optimized_style_function(feature):
+            return {
+                "color": "red",
+                "weight": 2,
+                "fillOpacity": 0.05
+            }
+        
         for _, row in self.quartiers_gdf.iterrows():
             if row.geometry is not None:
                 #simplified_geom = self.simplify_geometry(row.geometry, tolerance=0.0005)
                 folium.GeoJson(
                     #simplified_geom,
                     row.geometry,
-                    style_function=lambda x: {"color": "red", "weight": 2, "fillOpacity": 0.05},
-                    tooltip=f"Quartier: {row['quartier_nom']}"
-                ).add_to(self.m)
+                    style_function=optimized_style_function,
+                    tooltip=f"{row['CCRCA']}"
+                ).add_to(quartier_group)
+        quartier_group.add_to(self.m)
     
-    def add_routes(self, max_routes: int = 1000) -> None:
+    def add_routes(self) -> None:
+    #def add_routes(self, max_routes: int = 1000) -> None:
         """Add the routes to the map"""
-        routes_to_display = self.get_optimized_routes(max_routes)
+        routes_to_display = self.routes_quartiers
+        #routes_to_display = self.get_optimized_routes()
         routes_group = folium.FeatureGroup(name="Routes nommées")
         
         def optimized_style_function(feature):
@@ -72,11 +84,10 @@ class MapGenerator:
         batch_size = 10
         for i in range(0, len(routes_to_display), batch_size):
             batch = routes_to_display.iloc[i:i+batch_size]
-            
             for _, row in batch.iterrows():
                 if row.geometry is not None:
                     #simplified_route = self.simplify_geometry(row.geometry, tolerance=0.0001)
-                    tooltip_text = f"Route: {row['nom_attribue']}"
+                    tooltip_text = f"{row['nom_attribue']}"
                     
                     folium.GeoJson(
                         #simplified_route,
@@ -93,19 +104,22 @@ class MapGenerator:
         """Add the controls of the map"""
         folium.LayerControl().add_to(self.m)
     
-    def generate_map(self, output_file: str = "html/carte_test.html", max_routes: int = 1000) -> None:
+    def generate_map(self, output_file: str = "html/carte_test.html") -> None:
+    #def generate_map(self, output_file: str = "html/carte_test.html", max_routes: int = 1000) -> None:
 
-        """Generate the complete interactive map"""
 
-        # create html directory if it doesn't exist
+        """Generate the map"""
+
+        # Create html directory if it doesn't exist
         Path(output_file).parent.mkdir(parents=True, exist_ok=True)
         self.create_map()
         self.add_quartier_boundaries()
-        self.add_routes(max_routes)
+        self.add_routes()
         self.add_controls()
         
         self.m.save(output_file)
         logger.info(f"Carte générée : {output_file}")
     
     def get_map(self) -> folium.Map:
-        return self.m
+        return self.m 
+

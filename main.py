@@ -2,6 +2,7 @@ from core.name_generator import NameGenerator
 from core.map_generator import MapGenerator
 from core.route_namer import RouteNamer
 from utils import logger
+import datetime
 
 def main():
     """Main function"""
@@ -10,7 +11,8 @@ def main():
     
     try:
         # 1. Generate names
-        logger.info("Début du processus de nommage des routes")
+        start_time = datetime.datetime.now()
+        logger.info(f"{start_time} - Début du processus de nommage des routes")
         name_generator = NameGenerator()
         name_generator.save_names_to_csv()
         
@@ -30,6 +32,9 @@ def main():
         logger.info(f"Test effectué sur le quartier {filter_quartier}")
         logger.info(f"Routes affichées: {len(route_namer.get_routes_data())} totales")
         logger.info("Processus terminé avec succès !")
+
+        end_time = datetime.datetime.now()
+        logger.info(f"{end_time} - Processus terminé en {end_time - start_time}")
         
     except Exception as e:
         logger.error(f"Erreur lors de l'exécution: {e}")
