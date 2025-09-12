@@ -1,13 +1,12 @@
-
-from name_generator import NameGenerator
-from route_namer import RouteNamer
-from map_generator import MapGenerator
+from core.name_generator import NameGenerator
+from core.map_generator import MapGenerator
+from core.route_namer import RouteNamer
 from utils import logger
 
 def main():
     """Main function"""
     ville = "Dakar, Senegal"
-    quartier_test = "Yoff"
+    filter_quartier = "Yoff"
     
     try:
         # 1. Generate names
@@ -16,7 +15,7 @@ def main():
         name_generator.save_names_to_csv()
         
         # 2. Create and run the pipeline
-        route_namer = RouteNamer(ville, quartier_test)
+        route_namer = RouteNamer(ville, filter_quartier)
         route_namer.load_names()
         route_namer.run_pipeline()
         
@@ -28,7 +27,7 @@ def main():
         map_generator.generate_map()
         
         # 4. Summary
-        logger.info(f"Test effectué sur le quartier {quartier_test}")
+        logger.info(f"Test effectué sur le quartier {filter_quartier}")
         logger.info(f"Routes affichées: {len(route_namer.get_routes_data())} totales")
         logger.info("Processus terminé avec succès !")
         

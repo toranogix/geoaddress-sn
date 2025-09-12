@@ -8,15 +8,15 @@ from utils import logger
 class RouteNamer:
     """Manage the assignment of names to routes"""
     
-    def __init__(self, ville: str, quartier_test: str = "Yoff"):
+    def __init__(self, ville: str, filter_quartier: str = "Yoff"):
         self.ville = ville
-        self.quartier_test = quartier_test
+        self.filter_quartier = filter_quartier
         self.names_list = []
         self.routes_gdf = None
         self.quartiers_gdf = None
         self.routes_quartiers = None
         
-    def load_names(self, names_file: str = "data/names.csv") -> None:
+    def load_names(self, names_file: str = "data/output/names.csv") -> None:
         """Load the list of names from the CSV file"""
         try:
             names_df = pd.read_csv(names_file)
@@ -28,23 +28,32 @@ class RouteNamer:
     
     def download_routes(self) -> None:
         """Download the routes of the specified quarter"""
-        logger.info(f"Téléchargement des routes pour le quartier {self.quartier_test}...")
+        logger.info(f"Téléchargement des routes pour le quartier {self.filter_quartier}...")
         try:
-            G = ox.graph_from_place(f"{self.quartier_test}, {self.ville}", network_type="drive")
+            G = ox.graph_from_place(f"{self.filter_quartier}, {self.ville}", network_type="drive")
             self.routes_gdf = ox.graph_to_gdfs(G, nodes=False, edges=True)
             self.routes_gdf = self.routes_gdf.to_crs(epsg=4326)
-            self.routes_gdf.to_file("data/routes_quartier_test.geojson", driver="GeoJSON")
+            self.routes_gdf.to_file("data/output/routes_quartier_test.geojson", driver="GeoJSON")
             logger.info(f"{len(self.routes_gdf)} routes téléchargées")
         except Exception as e:
             logger.error(f"Erreur lors du téléchargement des routes: {e}")
             raise
     
-    def download_quartiers(self) -> None:
-        """Download the data"""
-        logger.info(f"Téléchargement du quartier {self.quartier_test}...")
+    def load_quartiers_data(self, filter_quartier: str) -> gpd.GeoDataFrame:
+        """ Get data from file. By default, it returns the data of the quartier Yoff """
+
+        logger.info(f"Traitement du quartier {filter_quartier}...")
         try:
-            self.quartiers_gdf = ox.features_from_place(
-                f"{self.quartier_test}, {self.ville}",
+            self.quartiers_gdf = gpd.read_file("data/data_dkr/Quartier.shp")
+            self.quartiers_gdf = self.quartiers_gdf[self.quartiers_gdf["CCRCA"] == filter_quartier]
+            self.quartiers_gdf = self.quartiers_gdf.to_crs(epsg=4326)
+            self.quartiers_gdf.to_file("data/output/quartier_test.geojson", driver="GeoJSON")
+            logger.info(f"Traitement des données du quartier {filter_quartier} OK.")
+            return self.quartiers_gdf
+
+            """            
+            self.quartiers_gdf = r"ox.features_from_place(
+                f"{self.filter_quartier}, {self.ville}",
                 tags={"boundary": "administrative", "admin_level": "10"}
             )
             self.quartiers_gdf = self.quartiers_gdf[
@@ -52,8 +61,9 @@ class RouteNamer:
             ]
             self.quartiers_gdf["quartier_nom"] = self.quartiers_gdf.get("name")
             self.quartiers_gdf = self.quartiers_gdf.to_crs(epsg=4326)
-            self.quartiers_gdf.to_file("data/quartier_test.geojson", driver="GeoJSON")
-            logger.info(f"{len(self.quartiers_gdf)} quartiers téléchargés")
+            self.quartiers_gdf.to_file("data/output/quartier_test.geojson", driver="GeoJSON")
+            logger.info(f"{len(self.quartiers_gdf)} quartiers téléchargés")"""
+
         except Exception as e:
             logger.error(f"Erreur lors du téléchargement des quartiers: {e}")
             raise
@@ -61,7 +71,7 @@ class RouteNamer:
     def associate_routes_to_quartiers(self) -> None:
         """Associate the routes """
         if self.routes_gdf is None or self.quartiers_gdf is None:
-            raise ValueError("Routes et quartiers doivent être téléchargés d'abord")
+            raise ValueError("Routes et quartiers doivent être traités d'abord")
         
         self.routes_quartiers = gpd.sjoin(
             self.routes_gdf, 
@@ -75,7 +85,7 @@ class RouteNamer:
     def assign_names_to_routes(self) -> None:
         """Assign names to the roads"""
         if self.routes_quartiers is None:
-            raise ValueError("Routes et quartiers doivent être associés d'abord")
+            raise ValueError("Routes et quartiers doivent être traités d'abord")
         
         noms_disponibles = self.names_list.copy()
         random.shuffle(noms_disponibles)
@@ -89,7 +99,7 @@ class RouteNamer:
     def run_pipeline(self) -> None:
         """Run the complete pipeline"""
         self.download_routes()
-        self.download_quartiers()
+        self.load_quartiers_data(self.filter_quartier)
         self.associate_routes_to_quartiers()
         self.assign_names_to_routes()
     
@@ -98,5 +108,5 @@ class RouteNamer:
         return self.routes_quartiers
     
     def get_quartiers_data(self) -> gpd.GeoDataFrame:
-        """Return the data """
+        """Get the quartiers data."""
         return self.quartiers_gdf

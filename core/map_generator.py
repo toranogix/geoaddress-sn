@@ -21,14 +21,14 @@ class MapGenerator:
             if hasattr(center_geom, 'centroid'):
                 return [center_geom.centroid.y, center_geom.centroid.x]
         return [14.6928, -17.4467] # default coordinates
-    
+    """
     def simplify_geometry(self, geom, tolerance: float = 0.0001):
-        """Simplify the geometry for better performance"""
+        #Simplify the geometry for better performance
         try:
             return geom.simplify(tolerance)
         except:
             return geom
-    
+    """
     def get_optimized_routes(self, max_routes: int = 1000) -> gpd.GeoDataFrame:
         """Return an optimized sample of routes"""
         if len(self.routes_quartiers) > max_routes:
@@ -48,9 +48,10 @@ class MapGenerator:
         """Add the boundaries of the quartiers"""
         for _, row in self.quartiers_gdf.iterrows():
             if row.geometry is not None:
-                simplified_geom = self.simplify_geometry(row.geometry, tolerance=0.0005)
+                #simplified_geom = self.simplify_geometry(row.geometry, tolerance=0.0005)
                 folium.GeoJson(
-                    simplified_geom,
+                    #simplified_geom,
+                    row.geometry,
                     style_function=lambda x: {"color": "red", "weight": 2, "fillOpacity": 0.05},
                     tooltip=f"Quartier: {row['quartier_nom']}"
                 ).add_to(self.m)
@@ -74,11 +75,12 @@ class MapGenerator:
             
             for _, row in batch.iterrows():
                 if row.geometry is not None:
-                    simplified_route = self.simplify_geometry(row.geometry, tolerance=0.0001)
+                    #simplified_route = self.simplify_geometry(row.geometry, tolerance=0.0001)
                     tooltip_text = f"Route: {row['nom_attribue']}"
                     
                     folium.GeoJson(
-                        simplified_route,
+                        #simplified_route,
+                        row.geometry,
                         style_function=optimized_style_function,
                         tooltip=tooltip_text,
                         popup=folium.Popup(tooltip_text, max_width=200)
