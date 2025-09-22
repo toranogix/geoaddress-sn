@@ -8,7 +8,7 @@ build/
 develop-eggs/
 dist/
 downloads/
-html/
+html/carte_test.html
 eggs/
 .eggs/
 lib/
@@ -24,7 +24,6 @@ MANIFEST
 
 logs/
 data/
-html/
 
 # Virtual environments
 .venv/
