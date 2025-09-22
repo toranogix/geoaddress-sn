@@ -2,19 +2,26 @@ import osmnx as ox
 import geopandas as gpd
 import pandas as pd
 import random
-from utils import logger
+from utils.utils import logger
+from config.urban_typology import get_urban_typology, get_typology_config
+from config.name_categories import get_name_categories
 
 
 class RouteNamer:
-    """Manage the assignment of names to routes"""
+    """Manage the assignment of names to routes based on urban typology"""
     
     def __init__(self, ville: str, filter_quartier: str):
         self.ville = ville
         self.filter_quartier = filter_quartier
+        self.typology = get_urban_typology(filter_quartier)
+        self.typology_config = get_typology_config(self.typology)
+        self.name_categories = get_name_categories(self.typology)
         self.names_list = []
         self.routes_gdf = None
         self.quartiers_gdf = None
         self.routes_quartiers = None
+        
+        logger.info(f"Typologie urbaine détectée: {self.typology} pour le quartier {filter_quartier}")
         
     def load_names(self, names_file: str = "data/output/names.csv") -> None:
         """Load the list of names from the CSV file"""
@@ -72,10 +79,14 @@ class RouteNamer:
         logger.info(f"{len(self.routes_quartiers)} routes associées aux quartiers")
     
     def assign_names_to_routes(self) -> None:
-        """Assign names to the roads. If the road has a name, it is not assigned a new name """
+        """Assign names to the roads based on urban typology. If the road has a name, it is not assigned a new name """
         
         if self.routes_quartiers is None:
             raise ValueError("Routes et quartiers doivent être traités d'abord")
+        
+        # Generate typology-specific names if not already loaded
+        if not self.names_list:
+            self._generate_typology_specific_names()
         
         noms_disponibles = self.names_list.copy()
         random.shuffle(noms_disponibles)
@@ -89,14 +100,52 @@ class RouteNamer:
                 nom = row["name"]
                 routes_with_original_names += 1
             else:
-                # else assign a new name
-                nom = noms_disponibles[i % len(noms_disponibles)]
+                # Assign a typology-appropriate name
+                nom = self._get_appropriate_name_for_route(row, noms_disponibles, i)
                 routes_with_new_names += 1
             self.routes_quartiers.loc[idx, "nom_attribue"] = nom
         
         logger.info(f"{len(self.routes_quartiers)} routes ont reçu un nom")
         logger.info(f"- {routes_with_original_names} routes ont conservé leur nom")
         logger.info(f"- {routes_with_new_names} routes ont reçu un nouveau nom")
+        logger.info(f"Typologie utilisée: {self.typology} ({self.typology_config['name']})")
+    
+    def _generate_typology_specific_names(self) -> None:
+        """Generate names specific to the current urban typology"""
+        noms = set()
+        
+        # Get available route types for this typology
+        route_types = self.name_categories["voies"]
+        
+        # Get naming elements
+        personnalites = self.name_categories["personnalites"]
+        concepts = self.name_categories["concepts"]
+        lieux = self.name_categories.get("lieux_officiels", 
+                                       self.name_categories.get("lieux_traditionnels",
+                                       self.name_categories.get("lieux_prestigieux",
+                                       self.name_categories.get("lieux_communautaires",
+                                       self.name_categories.get("lieux_commerciaux",
+                                       self.name_categories.get("lieux_industriels",
+                                       self.name_categories.get("lieux_touristiques", [])))))))
+        
+        # Combine all naming elements
+        all_elements = personnalites + concepts + lieux
+        
+        # Generate names
+        while len(noms) < 200:  # Generate more names for better variety
+            voie = random.choice(route_types)
+            element = random.choice(all_elements)
+            nom = f"{voie} {element}"
+            noms.add(nom)
+        
+        self.names_list = list(noms)
+        logger.info(f"Généré {len(self.names_list)} noms spécifiques à la typologie {self.typology}")
+    
+    def _get_appropriate_name_for_route(self, route_row, noms_disponibles, index) -> str:
+        """Get an appropriate name for a route based on its characteristics and typology"""
+        # For now, use the standard assignment
+        # This could be enhanced to consider route characteristics like length, connectivity, etc.
+        return noms_disponibles[index % len(noms_disponibles)]
     
     def run_pipeline(self) -> None:
         """Run the complete pipeline"""

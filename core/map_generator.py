@@ -1,7 +1,7 @@
 import folium
 import geopandas as gpd
 from typing import List
-from utils import logger
+from utils.utils import logger
 from pathlib import Path
 
 
