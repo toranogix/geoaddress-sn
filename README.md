@@ -1,62 +1,66 @@
-# 🗺️ Street Naming Project
+# 🗺️ Projet de Nommage des Rues
 
-Automatically assigns names to streets in a neighborhood using OpenStreetMap and generates an interactive map.
+Attribue automatiquement des noms aux rues d'un quartier en utilisant des données OpenStreetMap et génère une carte interactive.
 
-## 📁 Files
+## 📁 Fichiers
 
-- `main.py` - Main script to run everything
-- `name_generator.py` - Manages street names
-- `route_namer.py` - Downloads and processes routes
-- `map_generator.py` - Creates interactive maps
+- `main.py` - Script principal pour tout exécuter
+- `name_generator.py` - Gère les noms de rues
+- `route_namer.py` - Télécharge et traite les routes
+- `map_generator.py` - Crée des cartes interactives
 
-## 🚀 Quick Start
+## 🚀 Démarrage Rapide
 
 ```bash
 python main.py
 ```
 
-This will:
-1. Generate a list of street names
-2. Download routes from OpenStreetMap for Yoff, Dakar as a test. You can change it afterwards
-3. Assign names to the routes
-4. Create an interactive map (`carte_test.html`)
+Cela va :
+1. Générer une liste de noms de rues
+2. Télécharger les routes depuis OpenStreetMap pour Yoff, Dakar comme test. Vous pouvez le changer ensuite
+3. Attribuer des noms aux routes
+4. Créer une carte interactive (`carte_test.html`)
 
 ## ⚙️ Configuration
 
-Edit `main.py` to change:
-- `ville` - Target city (default: "Dakar, Senegal")
-- `quartier_test` - Neighborhood (default: "Yoff")
+Modifiez `main.py` pour changer :
+- `ville` - Ville cible (par défaut : "Dakar, Senegal")
+- `quartier_test` - Quartier (par défaut : "Yoff")
 
-## 📦 Install
+## 📦 Installation
 
 ```bash
 pip install osmnx geopandas pandas folium
 ```
 
-## 📊 Output
+## 📊 Sortie
 
-- `names.csv` - List of street names
-- `routes_quartier_test.geojson` - Downloaded routes
-- `quartier_test.geojson` - Neighborhood boundary
-- `carte_test.html` - Interactive map
+- `names.csv` - Liste des noms de rues
+- `routes_quartier_test.geojson` - Routes téléchargées
+- `quartier_test.geojson` - Limite du quartier
+- `carte_test.html` - Carte interactive
 
-## 🎯 Features
+## 🎯 Fonctionnalités
 
-- Downloads real street data from OpenStreetMap
-- Assigns predefined names to streets
-- Creates optimized interactive maps
-- Handles large datasets efficiently
+- Télécharge des données réelles de rues depuis OpenStreetMap
+- Attribue des noms prédéfinis aux rues
+- Crée des cartes interactives optimisées
+- Gère efficacement les gros jeux de données
 
 
-## 🆘 Issues?
+## 🆘 Problèmes ?
 
-- Check your internet connection
-- Make sure the neighborhood name exists in OpenStreetMap
-- Try a different neighborhood name
+- Vérifiez votre connexion internet
+- Assurez-vous que le nom du quartier existe dans OpenStreetMap
+- Essayez un nom de quartier différent
 
 ## Contributions
 
-Feel free to pull the repo or give some feedback!
+N'hésitez pas à faire un pull du repo ou à donner votre avis !
+
+## 📄 Licence
+
+Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
 
 
 
