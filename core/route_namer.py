@@ -8,7 +8,7 @@ from config.name_categories import get_name_categories
 
 
 class RouteNamer:
-    """Manage the assignment of names to routes based on urban typology"""
+    """Classe pour gérer l'attribution de noms aux routes en fonction de la typologie urbaine"""
     
     def __init__(self, ville: str, filter_quartier: str):
         self.ville = ville
@@ -24,7 +24,7 @@ class RouteNamer:
         logger.info(f"Typologie urbaine détectée: {self.typology} pour le quartier {filter_quartier}")
         
     def load_names(self, names_file: str = "data/output/names.csv") -> None:
-        """Load the list of names from the CSV file"""
+        """Chargement de la liste des noms depuis le fichier CSV"""
         try:
             names_df = pd.read_csv(names_file)
             self.names_list = names_df['name'].dropna().unique().tolist()
@@ -34,7 +34,7 @@ class RouteNamer:
             raise
     
     def download_routes(self) -> None:
-        """Download the routes of the specified quarter"""
+        """Téléchargement des routes du quartier spécifié"""
         logger.info(f"Téléchargement des routes pour le quartier {self.filter_quartier}...")
         try:
             G = ox.graph_from_place(f"{self.filter_quartier}, {self.ville}", network_type="drive")
@@ -48,7 +48,7 @@ class RouteNamer:
     
 
     def load_quartiers_data(self, filter_quartier: str) -> gpd.GeoDataFrame:
-        """ Get data from file. By default, it returns the data of the quartier Yoff """
+        """Récupération des données des quartiers depuis le fichier"""
 
         logger.info(f"Traitement du quartier {filter_quartier}...")
         try:
@@ -65,7 +65,7 @@ class RouteNamer:
             raise
     
     def associate_routes_to_quartiers(self) -> None:
-        """Associate the routes """
+        """Correspondance des routes aux quartiers"""
         if self.routes_gdf is None or self.quartiers_gdf is None:
             raise ValueError("Routes et quartiers doivent être traités d'abord")
         
@@ -79,12 +79,12 @@ class RouteNamer:
         logger.info(f"{len(self.routes_quartiers)} routes associées aux quartiers")
     
     def assign_names_to_routes(self) -> None:
-        """Assign names to the roads based on urban typology. If the road has a name, it is not assigned a new name """
+        """Attribution de noms aux routes en fonction de la typologie urbaine. Si la route a un nom, il n'est pas attribué un nouveau nom """
         
         if self.routes_quartiers is None:
             raise ValueError("Routes et quartiers doivent être traités d'abord")
         
-        # Generate typology-specific names if not already loaded
+        # Génération des noms spécifiques à la typologie si non déjà chargés
         if not self.names_list:
             self._generate_typology_specific_names()
         
@@ -95,12 +95,12 @@ class RouteNamer:
         routes_with_new_names = 0
         
         for i, (idx, row) in enumerate(self.routes_quartiers.iterrows()):
-            # Check if the road already has a name 
+            # Vérification si la route a déjà un nom 
             if pd.notna(row["name"]) and row["name"] is not None and str(row["name"]).strip() != "":
                 nom = row["name"]
                 routes_with_original_names += 1
             else:
-                # Assign a typology-appropriate name
+                # SInon, attribution d'un nom selon la typologie urbaine
                 nom = self._get_appropriate_name_for_route(row, noms_disponibles, i)
                 routes_with_new_names += 1
             self.routes_quartiers.loc[idx, "nom_attribue"] = nom
@@ -111,13 +111,13 @@ class RouteNamer:
         logger.info(f"Typologie utilisée: {self.typology} ({self.typology_config['name']})")
     
     def _generate_typology_specific_names(self) -> None:
-        """Generate names specific to the current urban typology"""
+        """Génération des noms spécifiques en fonction de la typologie urbaine"""
         noms = set()
         
-        # Get available route types for this typology
+        # Récupération des types de routes  
         route_types = self.name_categories["voies"]
         
-        # Get naming elements
+        # Récupération des éléments de nommage
         personnalites = self.name_categories["personnalites"]
         concepts = self.name_categories["concepts"]
         lieux = self.name_categories.get("lieux_officiels", 
@@ -128,11 +128,11 @@ class RouteNamer:
                                        self.name_categories.get("lieux_industriels",
                                        self.name_categories.get("lieux_touristiques", [])))))))
         
-        # Combine all naming elements
+        # Combinaison de tous les éléments de nommage
         all_elements = personnalites + concepts + lieux
         
-        # Generate names
-        while len(noms) < 200:  # Generate more names for better variety
+        # Génération des noms
+        while len(noms) < 200:  
             voie = random.choice(route_types)
             element = random.choice(all_elements)
             nom = f"{voie} {element}"
@@ -142,22 +142,20 @@ class RouteNamer:
         logger.info(f"Généré {len(self.names_list)} noms spécifiques à la typologie {self.typology}")
     
     def _get_appropriate_name_for_route(self, route_row, noms_disponibles, index) -> str:
-        """Get an appropriate name for a route based on its characteristics and typology"""
-        # For now, use the standard assignment
-        # This could be enhanced to consider route characteristics like length, connectivity, etc.
+        """Récupération d'un nom approprié pour une route en fonction de ses caractéristiques et de la typologie urbaine"""
+ 
         return noms_disponibles[index % len(noms_disponibles)]
     
     def run_pipeline(self) -> None:
-        """Run the complete pipeline"""
         self.download_routes()
         self.load_quartiers_data(self.filter_quartier)
         self.associate_routes_to_quartiers()
         self.assign_names_to_routes()
     
     def get_routes_data(self) -> gpd.GeoDataFrame:
-        """Return the data of the roads with assigned names"""
+        """Retourne les données des routes avec les noms attribués"""
         return self.routes_quartiers
     
     def get_quartiers_data(self) -> gpd.GeoDataFrame:
-        """Get the quartiers data."""
+        """Retourne les données des quartiers"""
         return self.quartiers_gdf

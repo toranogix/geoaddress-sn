@@ -1,19 +1,18 @@
 """
-Specific name categories by urban typology for Dakar
+Catégories de noms spécifiques par typologie urbaine pour Dakar
 """
 
-# Names for Centre-Ville/Plateau categories
 CENTRE_VILLE_NAMES = {
-    "voies": ["Avenue", "Boulevard", "Place", "Rue"],
+    "voies": ["Rue"],
     "personnalites": [
         "Léopold Sédar Senghor", "Abdoulaye Wade", "Blaise Diagne", 
         "El Hadj Malick Sy", "Cheikh Anta Diop", "Aimé Césaire",
         "Nelson Mandela", "Kwame Nkrumah", "Thomas Sankara",
-        "Patrice Lumumba", "Ahmadou Bamba", "Cheikh Ibrahima Fall"
+        "Patrice Lumumba", "Ahmadou Bamba", "Cheikh Ibrahima Fall", "Mamadou Dia",
+        "Alboury Ndiaye", "Iba Der Thiam"
     ],
     "concepts": [
-        "Indépendance", "Liberté", "Démocratie", "Renaissance", 
-        "Union", "Paix", "Développement", "Progrès", "Modernité"
+        "de l'Indépendance", "de la Liberté", "Renaissance", "de la Paix"
     ],
     "lieux_officiels": [
         "Palais", "Assemblée", "Ministère", "Présidence", 
@@ -21,35 +20,31 @@ CENTRE_VILLE_NAMES = {
     ]
 }
 
-# Names for Medina categories
 MEDINA_NAMES = {
-    "voies": ["Rue", "Impasse", "Place", "Passage"],
+    "voies": ["Rue"],
     "personnalites": [
         "Cheikh Ahmadou Bamba", "Mame Diarra Bousso", "Serigne Touba",
-        "Cheikh Ibrahima Fall", "Mame Cheikh Ibrahima Fall", "Mame Diarra",
-        "Serigne Modou Kara", "Serigne Bassirou Mbacké", "Serigne Saliou Mbacké"
+        "Cheikh Ibrahima Fall", "Mame Cheikh Ibrahima Fall", "Mame Diarra", "Seydina Limamou laye"
+        "Serigne Modou Kara", "Serigne Bassirou Mbacké", "Serigne Saliou Mbacké", "Lat Ngoné Latir Diop"
     ],
     "concepts": [
-        "Teranga", "Fadj", "Jigeen", "Keur", "Ndeup", "Touba", "Ndiaga",
-        "Baye", "Mame", "Serigne", "Cheikh", "Imam", "Marabout"
+        "Teranga", "Fadj", "Jigeen", "Keur", "Touba", "Ndiaga"
     ],
     "lieux_traditionnels": [
-        "Mosquée", "Touba", "Médina", "Soumbédioune", "Gorée", 
-        "Marché", "Place", "Cimetière", "École", "Bibliothèque"
+        "Mosquée", "Touba", "Médina", "Soumbédioune", "Gorée"
     ]
 }
 
-# Names for Residential Aisé categories
 RESIDENTIEL_AISE_NAMES = {
-    "voies": ["Avenue", "Boulevard", "Rue", "Allée", "Villa"],
+    "voies": ["Rue"],
     "personnalites": [
         "Mariama Ba", "Fatou Diome", "Aminata Sow Fall", "Ken Bugul",
         "Ousmane Sembène", "Cheikh Hamidou Kane", "Boubacar Boris Diop",
         "Aminata Maïga Ka", "Aminata Sow Fall", "Fatou Ndiaye"
     ],
     "concepts": [
-        "Horizon", "Étoiles", "Aurore", "Crépuscule", "Océan", "Plage",
-        "Palmiers", "Baobabs", "Manguiers", "Cocotiers", "Hibiscus"
+        "Horizon", "Aurore", "Crépuscule", "Océan", "Plage",
+        "Palmiers", "Baobabs", "Manguiers"
     ],
     "lieux_prestigieux": [
         "Almadies", "Ngor", "Ouakam", "Yoff", "Mermoz", "Fann",
@@ -57,34 +52,28 @@ RESIDENTIEL_AISE_NAMES = {
     ]
 }
 
-# Names for Residential Populaire categories
 RESIDENTIEL_POPULAIRE_NAMES = {
-    "voies": ["Rue", "Impasse", "Allée", "Passage"],
+    "voies": ["Rue"],
     "personnalites": [
-        "Ousmane Sonko", "Waldiodio Ndiaye", "Mame Cheikh Ibrahima Fall",
+        "Ousmane Sonko", "Bassirou Diomaye Faye", "Waldiodio Ndiaye", "Mame Cheikh Ibrahima Fall",
         "Serigne Modou Kara", "Serigne Bassirou Mbacké", "Serigne Saliou Mbacké",
-        "Mame Diarra Bousso", "Cheikh Ibrahima Fall", "Mame Diarra"
+        "Mame Diarra Bousso", "Cheikh Ibrahima Fall", "Mame Diarra", "Waldiodio Ndiaye"
     ],
     "concepts": [
-        "Union", "Paix", "Espoir", "Renaissance", "Développement", "Progrès",
-        "Solidarité", "Fraternité", "Communauté", "Famille", "Enfants"
+        "Union", "Paix", "Espoir", "Renaissance"
     ],
     "lieux_communautaires": [
-        "École", "Marché", "Mosquée", "Centre", "Place", "Stade",
-        "Dispensaire", "Bibliothèque", "Jardin", "Parc", "Terrain"
+        "École", "Marché", "Mosquée", "Centre", "Place", "Stade"
     ]
 }
 
-# Names for Commercial categories
 COMMERCIAL_NAMES = {
-    "voies": ["Rue", "Avenue", "Place", "Marché"],
+    "voies": ["Rue"],
     "personnalites": [
-        "Sandaga", "Castors", "Hysacam", "Marché", "Commerce",
-        "Artisan", "Commerçant", "Marchand", "Vendeur"
+        "Sandaga", "Castors"
     ],
     "concepts": [
-        "Commerce", "Marché", "Artisanat", "Boutique", "Étal",
-        "Vente", "Achat", "Échange", "Négociation", "Affaires"
+        "Commerce", "Marché", "Artisanat", "Boutique", "Étal"
     ],
     "lieux_commerciaux": [
         "Marché", "Boutique", "Étal", "Magasin", "Commerce",
@@ -92,40 +81,35 @@ COMMERCIAL_NAMES = {
     ]
 }
 
-# Names for Industrial categories
 INDUSTRIEL_NAMES = {
-    "voies": ["Route", "Avenue", "Quai", "Zone"],
+    "voies": ["Rue"],
     "personnalites": [
-        "Port", "Industrie", "Logistique", "Transport", "Entrepôt"
+        "Abdou Diouf", "Léopold Sédar Senghor", "Blaise Diagne", "Cheikh Anta Diop",
     ],
     "concepts": [
         "Industrie", "Port", "Logistique", "Transport", "Entrepôt",
         "Zone", "Terminal", "Quai", "Dock", "Hangar"
     ],
     "lieux_industriels": [
-        "Port", "Terminal", "Quai", "Zone", "Entrepôt", "Hangar",
-        "Usine", "Atelier", "Dépôt", "Station", "Base"
+        "Port", "Terminal", "Quai"
     ]
 }
 
-# Names for Touristique categories
 TOURISTIQUE_NAMES = {
-    "voies": ["Avenue", "Boulevard", "Corniche", "Route", "Promenade"],
+    "voies": ["Rue"],
     "personnalites": [
-        "Gorée", "Almadies", "Ngor", "Ouakam", "Yoff", "Plage",
-        "Océan", "Corniche", "Baie", "Cap", "Pointe"
+        "Mariama Ba", "Baaba Maal", "Ousmane Sembène"
     ],
     "concepts": [
-        "Océan", "Plage", "Sable", "Vagues", "Vent", "Soleil",
-        "Palmiers", "Cocotiers", "Baobabs", "Hibiscus", "Fleurs"
+        "Océan", "Plage", "Sable", "Vagues", "Bissap",
+        "Palmiers", "Cocotiers", "Baobabs"
     ],
     "lieux_touristiques": [
-        "Plage", "Océan", "Corniche", "Baie", "Cap", "Pointe",
-        "Phare", "Port", "Marina", "Hôtel", "Résidence", "Villa"
+        "Plage", "Océan", "Corniche", "Baie", "Cap", "Gorée",
+        "Phare", "Port", "Marina", "Hôtel"
     ]
 }
 
-# Mapping of name categories by urban typology
 NAME_CATEGORIES = {
     "centre_ville": CENTRE_VILLE_NAMES,
     "plateau": CENTRE_VILLE_NAMES,
@@ -138,7 +122,10 @@ NAME_CATEGORIES = {
 }
 
 def get_name_categories(typology: str) -> dict:
-    """
-    Returns the name categories for a given urban typology
+    """Retourne les catégories de noms spécifiques par typologie urbaine
+
+    Args:
+        typology (str): Catégories de noms spécifiques par typologie urbaine
+
     """
     return NAME_CATEGORIES.get(typology, RESIDENTIEL_POPULAIRE_NAMES)

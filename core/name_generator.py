@@ -7,7 +7,8 @@ from config.name_categories import get_name_categories
 
 
 class NameGenerator:
-    """Class to generate and manage street names based on urban typology"""
+    """ Classe pour générer les noms spécifiques à la typologie
+    """
 
     def __init__(self, n_names: int = 100, quarter_name: str = None, typology: str = None):
         self.n_names = n_names
@@ -18,13 +19,17 @@ class NameGenerator:
         self.noms = self._generate_typology_specific_names()
 
     def _generate_typology_specific_names(self) -> list:
-        """Generate names specific to the urban typology"""
+        """Générer les noms spécifiques à la typologie
+
+        Returns:
+            list: Liste des noms
+        """
         noms = set()
         
-        # Get available route types for this typology
+        # Récupérer les types de voies pour chaque typologie
         route_types = self.name_categories["voies"]
         
-        # Get naming elements
+        # Récupérer les éléments de nommage
         personnalites = self.name_categories["personnalites"]
         concepts = self.name_categories["concepts"]
         lieux = self.name_categories.get("lieux_officiels", 
@@ -35,10 +40,10 @@ class NameGenerator:
                                        self.name_categories.get("lieux_industriels",
                                        self.name_categories.get("lieux_touristiques", [])))))))
         
-        # Combine all naming elements
+        # Combiner tous les éléments de nommage
         all_elements = personnalites + concepts + lieux
         
-        # Generate names
+        # Génération des noms
         while len(noms) < self.n_names:
             voie = random.choice(route_types)
             element = random.choice(all_elements)
@@ -48,11 +53,15 @@ class NameGenerator:
         return list(noms)
 
     def save_names_to_csv(self, filename: str = "data/names.csv") -> None:
-        """Save names to CSV with typology information"""
-        # Create data directory if it doesn't exist
+        """Enregistrer les noms dans un fichier CSV avec les informations de la typologie
+
+        Args:
+            filename (str, optional): Nom du fichier. ".
+        """
+
         Path(filename).parent.mkdir(parents=True, exist_ok=True)
         
-        # Create DataFrame with typology information
+        # Création d'un df avec les informations de la typologie
         df = pd.DataFrame({
             "name": self.noms,
             "typology": [self.typology] * len(self.noms),
@@ -63,11 +72,14 @@ class NameGenerator:
         logger.info(f"Fichier '{filename}' généré avec succès pour la typologie '{self.typology}'")
 
     def get_names_list(self) -> list:
-        """Return the list of names"""
         return self.noms.copy()
     
     def get_typology_info(self) -> dict:
-        """Return information about the current typology"""
+        """Retourner les informations sur la typologie
+
+        Returns:
+            dict: Informations sur la typologie
+        """
         return {
             "typology": self.typology,
             "quarter": self.quarter_name,

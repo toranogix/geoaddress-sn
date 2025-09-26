@@ -6,7 +6,8 @@ from pathlib import Path
 
 
 class MapGenerator:
-    """Class to generate the interactive map"""
+    """Classe pour générer la carte interactive
+    """
     
     def __init__(self, routes_quartiers: gpd.GeoDataFrame, quartiers_gdf: gpd.GeoDataFrame):
         self.routes_quartiers = routes_quartiers
@@ -15,29 +16,17 @@ class MapGenerator:
         self.m = None
         
     def calculate_map_center(self) -> List[float]:
-        """Calculate the center of the map"""
+        """Calcul du centre de la carte
+        """
         if len(self.quartiers_gdf) > 0:
             center_geom = self.quartiers_gdf.iloc[0].geometry
             if hasattr(center_geom, 'centroid'):
                 return [center_geom.centroid.y, center_geom.centroid.x]
         return [14.6928, -17.4467] # default coordinates
-    """
-    def simplify_geometry(self, geom, tolerance: float = 0.0001):
-        #Simplify the geometry for better performance
-        try:
-            return geom.simplify(tolerance)
-        except:
-            return geom
-    """
-    """s
-    def get_optimized_routes(self, max_routes: int = 1000) -> gpd.GeoDataFrame:
-        if len(self.routes_quartiers) > max_routes:
-            logger.info(f"Trop de routes ({len(self.routes_quartiers)}), affichage limité à {max_routes}")
-            return self.routes_quartiers.sample(n=max_routes, random_state=42)
-        return self.routes_quartiers
-    """
+    
     def create_map(self) -> None:
-        """Create the base map"""
+        """Création de la base de la carte
+        """
         self.m = folium.Map(
             location=self.map_center, 
             zoom_start=12, 
@@ -45,7 +34,8 @@ class MapGenerator:
         )
     
     def add_quartier_boundaries(self) -> None:     
-        """Add the boundaries of the quartiers"""
+        """Ajout des limites des quartiers
+        """
         quartier_group = folium.FeatureGroup(name="Quartiers")
         
         def optimized_style_function(feature):
@@ -68,7 +58,8 @@ class MapGenerator:
     
     def add_routes(self) -> None:
     #def add_routes(self, max_routes: int = 1000) -> None:
-        """Add the routes to the map"""
+        """Ajout des routes à la carte
+        """
         routes_to_display = self.routes_quartiers
         #routes_to_display = self.get_optimized_routes()
         routes_group = folium.FeatureGroup(name="Routes nommées")
@@ -101,16 +92,17 @@ class MapGenerator:
         logger.info(f"{len(routes_to_display)} routes ajoutées à la carte")
     
     def add_controls(self) -> None:
-        """Add the controls of the map"""
+        """Ajout des boutons de contrôles de la carte
+        """
         folium.LayerControl().add_to(self.m)
     
     def generate_map(self, output_file: str = "html/carte_test.html") -> None:
     #def generate_map(self, output_file: str = "html/carte_test.html", max_routes: int = 1000) -> None:
 
 
-        """Generate the map"""
+        """Génération de la carte
+        """
 
-        # Create html directory if it doesn't exist
         Path(output_file).parent.mkdir(parents=True, exist_ok=True)
         self.create_map()
         self.add_quartier_boundaries()

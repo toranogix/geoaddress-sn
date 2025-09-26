@@ -1,69 +1,65 @@
-"""
-Urban classification specific to Dakar
-Defines urban typologies and their characteristics
+"""Typologie urbaine de Dakar
 """
 
-# Urban typologies of Dakar
 URBAN_TYPOLOGIES = {
     "centre_ville": {
         "name": "Centre-Ville",
         "description": "Zone administrative et commerciale centrale",
         "characteristics": ["administratif", "commercial", "bureaux", "gouvernement"],
-        "route_types": ["Avenue", "Boulevard", "Place"],
+        "route_types": ["Rue"],
         "naming_style": "officiel"
     },
     "plateau": {
         "name": "Plateau",
         "description": "Quartier d'affaires et administratif",
         "characteristics": ["affaires", "administratif", "bureaux", "banques"],
-        "route_types": ["Avenue", "Boulevard", "Rue"],
+        "route_types": ["Rue"],
         "naming_style": "officiel"
     },
     "medina": {
         "name": "Médina",
         "description": "Quartier historique et traditionnel",
         "characteristics": ["historique", "traditionnel", "culturel", "religieux"],
-        "route_types": ["Rue", "Impasse", "Place"],
+        "route_types": ["Rue"],
         "naming_style": "traditionnel"
     },
     "residentiel_aisé": {
         "name": "Résidentiel Aisé",
         "description": "Quartiers résidentiels de standing",
         "characteristics": ["résidentiel", "villas", "standing", "calme"],
-        "route_types": ["Avenue", "Rue", "Allée", "Villa"],
+        "route_types": ["Rue"],
         "naming_style": "prestigieux"
     },
     "residentiel_populaire": {
         "name": "Résidentiel Populaire",
         "description": "Quartiers résidentiels populaires",
         "characteristics": ["résidentiel", "populaire", "familial", "communautaire"],
-        "route_types": ["Rue", "Impasse", "Allée"],
+        "route_types": ["Rue"],
         "naming_style": "communautaire"
     },
     "commercial": {
         "name": "Commercial",
         "description": "Zones commerciales et marchés",
         "characteristics": ["commercial", "marché", "commerce", "artisanat"],
-        "route_types": ["Rue", "Avenue", "Place"],
+        "route_types": ["Rue"],
         "naming_style": "commercial"
     },
     "industriel": {
         "name": "Industriel",
         "description": "Zones industrielles et portuaires",
         "characteristics": ["industriel", "portuaire", "logistique", "entrepôts"],
-        "route_types": ["Route", "Avenue", "Quai"],
+        "route_types": ["Rue"],
         "naming_style": "fonctionnel"
     },
     "touristique": {
         "name": "Touristique",
         "description": "Zones touristiques et côtières",
         "characteristics": ["touristique", "plage", "hôtels", "restaurants"],
-        "route_types": ["Avenue", "Boulevard", "Corniche", "Route"],
+        "route_types": ["Rue"],
         "naming_style": "attractif"
     }
 }
 
-# Mapping of Dakar quarters by urban typology
 DAKAR_QUARTERS_TYPOLOGY = {
     # Centre-ville et Plateau
     "plateau": "centre_ville",
@@ -94,7 +90,6 @@ DAKAR_QUARTERS_TYPOLOGY = {
     
     # Commercial
     "sandaga": "commercial",
-    "hysacam": "commercial",
     "castors": "commercial",
     
     # Industriel/Portuaire
@@ -107,8 +102,13 @@ DAKAR_QUARTERS_TYPOLOGY = {
 }
 
 def get_urban_typology(quarter_name: str) -> str:
-    """
-    Returns the urban typology of a quarter
+    """Retourne la typologie urbaine d'un quartier
+
+    Args:
+        quarter_name (str): Nom du quartier
+
+    Returns:
+        str: Typologie urbaine
     """
     quarter_lower = quarter_name.lower().strip()
     
@@ -119,11 +119,16 @@ def get_urban_typology(quarter_name: str) -> str:
         if quarter_key in quarter_lower or quarter_lower in quarter_key:
             return typology
     
-    # By default, residential populaire
+    # Par défaut, résidentiel populaire
     return "residentiel_populaire"
 
 def get_typology_config(typology: str) -> dict:
-    """
-    Returns the configuration of an urban typology
+    """Retourne la configuration d'une typologie urbaine
+
+    Args:
+        typology (str): Typologie urbaine
+
+    Returns:
+        dict: Configuration de la typologie urbaine
     """
     return URBAN_TYPOLOGIES.get(typology, URBAN_TYPOLOGIES["residentiel_populaire"])
