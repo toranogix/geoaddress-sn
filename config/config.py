@@ -1,26 +1,62 @@
-
-TYPE_URBAIN = [ "PLateau", "Centre-Ville", "Résidentiel"]
-
+"""Configuration des noms des rues"""
 
 TYPE_VOIES = [
-    "Rue", "Avenue", "Boulevard", "Chemin", "Allée", "Route"
+    "Rue"
 ]
 
-# Keywords
 KEYWORDS = [
-    "Liberté", "Soleil", "Palmiers", "Baobabs", "Plage", "Almadies", "Yoff",
-    "Océan", "Lions", "Horizon", "Manguiers", "Colibris", "Ouakam", "Pirogues",
-    "Gorée", "Phare", "Écoles", "Renaissance", "Marché", "Hibiscus",
-    "Sénégal", "Dakar", "Ngor", "Corniche", "Sable", "Médina", "Soumbédioune", "Ousmane Sonko", "EL Hadj Malick Sy",
-    "Kermel", "Plateau", "Ngor Virage", "Pikine", "Guédiawaye", "Caméléons", "Mariama Ba", "Fatou Diome",
-    "Léopold Sédar Senghor", "Abdoulaye Wade", "Iles", "Cocotiers", "Niap", "Carapaces", "Waldiodio Ndiaye", "Blaise Diagne",
-    "Pastèques", "Mango", "Tam-tam", "Safran", "Fleur d'Or", "Étoiles",
-    "Vent", "Lagune", "Poissons", "Perles", "Mousso", "Dunes",
-    "Campement", "Aurore", "Colline", "Parasol", "Vagues", "Marine",
-    "Samba", "Sabliers", "Navétanes", "Baie", "Espoir", "Union", "Cap",
-    "Teranga", "Paix", "Fadj", "Jigeen", "Ndiaye", "Fall", "Diop",
-    "Diallo", "Sy", "Sarr", "Gueye", "Ba", "Mbaye", "Ndao", "Seck",
-    "Wade", "Ka", "Badiane", "Faye", "Diagne", "Mbengue", "Lô", "Cissé",
-    "Thiam", "Ndour", "Gomis", "Mané", "Sagna", "Sadio", "Sonko", "Bop",
-    "Coumba", "Keur", "Samba Laobé", "Mame Diarra"
+    "Léopold Sédar Senghor",
+    "Cheikh Anta Diop",
+    "Mamadou Dia",
+    "Blaise Diagne",
+    "Lat Dior Ngoné Latyr Diop",
+    "Alboury Ndiaye",
+    "Maba Diakhou Bâ",
+    "Aline Sitoé Diatta",
+    "Soundiata Keïta",
+    "Ahmadou Bamba",
+    "El Hadj Malick Sy",
+    "Serigne Fallou Mbacké",
+    "Serigne Babacar Sy",
+    "Seydina Limamou Laye",
+    "Ousmane Dan Fodio",
+    "Ousmane Sembène",
+    "Birago Diop",
+    "Aminata Sow Fall",
+    "Cheikh Hamidou Kane",
+    "Yandé Codou Sène",
+    "Ndiadiane Ndiaye",
+    "Kocc Barma Fall",
+    "Boubacar Joseph Ndiaye",
+    "Samory Touré",
+    "Mohamed VI",
+    "de la Teranga",
+    "de la Souveraineté",
+    "de l'Unité Africaine",
+    "de la Paix",
+    "de la Liberté",
+    "de la Baobab",
+    "de Djoudj",
+    "Niokolo Koba",
+    "Sine Saloum",
+    "Casamance",
+    "du Bissap",
+    "des Pêcheurs",
+    "des Tisserands",
+    "des Forgerons",
+    "des Marchés",
+    "Kwame Nkrumah",
+    "Thomas Sankara",
+    "Nelson Mandela",
+    "Patrice Lumumba",
+    "Haïlé Sélassié",
+    "de la Renaissance",
+    "de l'Espoir",
+    "de la Fraternité",
+    "de l'Égalité",
+    "de la Résilience",
+    "Jigeen",
+    "Mariama Ba",
+    "Ken Bougoul",
 ]
+

@@ -1,28 +1,8 @@
-# Python
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-html/carte_test.html
+.venv/
 
-MANIFEST
-
+cache/
 logs/
+map/
 data/
 
-# Virtual environments
-.venv/
-venv/
-
-
-# Project specific
-*.geojson
-*.html
-*.csv
-cache/
-*.log

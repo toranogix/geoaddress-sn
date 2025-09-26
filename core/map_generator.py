@@ -96,7 +96,7 @@ class MapGenerator:
         """
         folium.LayerControl().add_to(self.m)
     
-    def generate_map(self, output_file: str = "html/carte_test.html") -> None:
+    def generate_map(self, output_file: str = "map/carte_test.html") -> None:
     #def generate_map(self, output_file: str = "html/carte_test.html", max_routes: int = 1000) -> None:
 
 
