@@ -7,16 +7,24 @@ from config.config import TYPE_VOIES, KEYWORDS
 
 class NameGenerator:
     """Classe pour générer et gérer les noms des rues"""
+    # TODO: Améliorer la génération des noms
 
     def __init__(self, n_names: int = 100):
         noms = set()
-        # Génération de  noms uniques
+        max_possible = len(TYPE_VOIES) * len(KEYWORDS)
+        
+        # Limiter le nombre de noms demandés au maximum possible
+        n_names = min(n_names, max_possible)
+        
+        # Génération de noms uniques
         while len(noms) < n_names:
             voie = random.choice(TYPE_VOIES)
             mot = random.choice(KEYWORDS)
             nom = f"{voie} {mot}"
             noms.add(nom)
         self.noms = list(noms)
+        
+        logger.info(f"{len(self.noms)} noms uniques générés (maximum possible: {max_possible})")
 
     def save_names_to_csv(self, filename: str = "data/output/names.csv") -> None:
 
